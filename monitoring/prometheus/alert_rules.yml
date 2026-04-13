@@ -1,0 +1,20 @@
+groups:
+  - name: habit_flow_alerts
+    rules:
+      # 1. Warning Alert: High Latency (SLO Breach)
+      - alert: HighLatencyWarning
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow response times on {{ $labels.instance }}"
+
+      # 2. Critical Alert: High Error Rate (Service Down/Critical)
+      - alert: HighErrorRateCritical
+        expr: (sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100) > 10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical error rate detected!"
