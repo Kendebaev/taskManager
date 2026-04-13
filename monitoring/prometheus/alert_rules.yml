@@ -12,7 +12,7 @@ groups:
 
       # 2. Critical Alert: High Error Rate (Service Down/Critical)
       - alert: HighErrorRateCritical
-        expr: (sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100) > 10
+        expr: (sum(rate(http_requests_total{code=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100) > 10
         for: 1m
         labels:
           severity: critical
